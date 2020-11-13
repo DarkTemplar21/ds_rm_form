@@ -5,6 +5,7 @@ import 'package:splashscreen/splashscreen.dart';
 void main() {
   runApp(MaterialApp(
     theme: ThemeData(
+      primaryColor: Colors.indigo,
       textTheme: ThemeData.light().textTheme.copyWith(
             headline6: TextStyle(
               fontSize: 15,
