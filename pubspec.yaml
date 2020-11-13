@@ -26,6 +26,8 @@ dependencies:
     sdk: flutter
   splashscreen:
   http: ^0.12.2
+  flutter_login: ^1.0.14
+
 
 
 
