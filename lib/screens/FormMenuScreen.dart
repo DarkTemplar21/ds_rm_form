@@ -1,5 +1,6 @@
 import 'package:ds_richmeat_form/model/FormRM.dart';
 import 'package:ds_richmeat_form/screens/ColdRoomsScreen.dart';
+import 'package:ds_richmeat_form/screens/FormsScreen.dart';
 import 'package:flutter/material.dart';
 
 class FormMenuScreen extends StatelessWidget {
@@ -33,6 +34,30 @@ class FormMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: Column(
+          children: [
+            UserAccountsDrawerHeader(
+              currentAccountPicture: Image.asset("assets/img/ddg.png"),
+              accountName: Text("ale"),
+              accountEmail: Text("ale@richmeat.com"),
+            ),
+            Text("Formularios"),
+            ListTile(
+              title: Text("Revisados"),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).push(FormScreenRoute());
+              },
+              leading: Image.asset("assets/img/temperature_form.png"),
+            ),
+            ListTile(
+              title: Text("Pendientes a Revisar"),
+              leading: Image.asset("assets/img/temperature_form.png"),
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Text(_title),
       ),
