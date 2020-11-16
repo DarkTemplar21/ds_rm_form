@@ -1,13 +1,16 @@
+import 'dart:convert';
+
 import 'package:ds_richmeat_form/screens/FormMenuScreen.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
     SystemUiOverlayStyle(
       systemNavigationBarColor:
-      SystemUiOverlayStyle.dark.systemNavigationBarColor,
+          SystemUiOverlayStyle.dark.systemNavigationBarColor,
     ),
   );
   runApp(MyApp());
@@ -54,7 +57,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: LoginScreen(),
-
     );
   }
 }
@@ -64,21 +66,42 @@ const users = const {
   'hunter@gmail.com': 'hunter',
 };
 
-
 class LoginScreen extends StatelessWidget {
+  static const _url = 'https://rm-form-backend.herokuapp.com/richmeat/login';
+  bool _isLogged = false;
+
   Duration get loginTime => Duration(milliseconds: 2250);
 
-  Future<String> _authUser(LoginData data) {
-    print('Name: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(data.name)) {
-        return 'Username not exists';
+  void irAlMenu(BuildContext context) async {
+    Navigator.pop(context);
+    Navigator.push(context, FormMenuRoute());
+  }
+
+  Future<String> _authUser(LoginData data, BuildContext context) {
+    _isLogged = false;
+    return http
+        .post(
+      _url,
+      headers: {'content-type': 'application/json'},
+      body: json.encode(
+        {'userName': data.name, 'password': data.password},
+      ),
+    )
+        .then((response) {
+      if (response.statusCode == 201) {
+        if (response.body == 'login:true') {
+          _isLogged = true;
+          return null;
+        } else {
+          return Future.value('Usuario o Contraseña incorrecta.');
+        }
+      } else {
+        return Future.value('Error de Comunicación.');
       }
-      if (users[data.name] != data.password) {
-        return 'Password does not match';
-      }
-      return null;
+    }).catchError((err) {
+      return Future.value('Error de RED.');
     });
+    ;
   }
 
   Future<String> _recoverPassword(String name) {
@@ -91,13 +114,79 @@ class LoginScreen extends StatelessWidget {
     });
   }
 
+  //---------------------------------------------
+//  Future<bool> login(BuildContext context, String usuario, String clave) async {
+//    http
+//        .post(
+//      _url,
+//      headers: {'content-type': 'application/json'},
+//      body: json.encode(
+//        {'userName': usuario, 'password': clave},
+//      ),
+//    )
+//        .then((response) {
+//      print('status::${response.statusCode}');
+//      if (response.statusCode == 201) {
+//        if (response.body == 'login:true') {
+//          irAlMenu(context);
+//        } else {
+//          showMyDialog(
+//              context, 'Error', 'Usuario o contraseña incorrecta.', 'Aceptar');
+//        }
+//      } else {
+//        showMyDialog(
+//            context, 'Error', 'Hay un problema en la comunicación.', 'Aceptar');
+//      }
+//    }).catchError((err) {
+//      showMyDialog(
+//          context,
+//          'Error',
+//          'Ha ocurrido un error de red.'
+//              '\nAsegúrese de estar conectado a internet.',
+//          'Aceptar');
+//    });
+//  }
+
+  void showMyDialog(
+      BuildContext context, String titulo, String mensaje, String accion) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text(titulo),
+            content: Text(mensaje),
+            actions: [
+              FlatButton(
+                child: Text(accion),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  //---------------------------------------------
+
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
-      title: 'ECORP',
-      logo: 'assets/images/ecorp-lightblue.png',
-      onLogin: _authUser,
-      onSignup: _authUser,
+      title: 'DS FORMS',
+      messages: LoginMessages(
+          usernameHint: "Usuario",
+          passwordHint: "Contraseña",
+          loginButton: "ENTRAR",
+          signupButton: "REGISTRARSE",
+          forgotPasswordButton: "¿Olvidó la contraseña?"),
+      emailValidator: (usuario) {
+        return usuario.isEmpty ? "Usuario incorrecto" : null;
+      },
+      logo: 'assets/img/ddg.png',
+      onLogin: (LoginData data) {
+        return _authUser(data, context);
+      },
+      onSignup: null,
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => FormMenuScreen(""),
