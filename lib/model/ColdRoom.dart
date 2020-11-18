@@ -14,4 +14,18 @@ class ColdRoom {
     this.isReviewed,
     this.temperatureRange,
   });
+  Map<String, dynamic> toEncodable() {
+    return {
+      'id': id,
+      'name': name,
+      'isOn': isOn,
+      'isInRange': isInRange,
+      'isReviewed': isReviewed,
+      'temperatureRange': temperatureRange,
+    };
+  }
+
+  Map<String, dynamic> toJson() {
+    return toEncodable();
+  }
 }

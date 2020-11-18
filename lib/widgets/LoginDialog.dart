@@ -14,7 +14,6 @@ class _LoginDialogState extends State<LoginDialog> {
   final TextEditingController passwordController = TextEditingController();
   static const _url = 'https://rm-form-backend.herokuapp.com/richmeat/login';
   bool _mantener_autenticado = true;
-
   void irAlMenu(BuildContext context) async {
     Navigator.pop(context);
     Navigator.push(context, FormMenuRoute());
