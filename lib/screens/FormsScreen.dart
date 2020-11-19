@@ -14,7 +14,7 @@ class FormScreen extends StatelessWidget {
           child: Column(
             children: [
               UserAccountsDrawerHeader(
-                currentAccountPicture: Image.asset("assets/img/ddg.png"),
+                currentAccountPicture: Image.asset("assets/img/app_icon.png"),
                 accountName: Text("ale"),
                 accountEmail: Text("ale@richmeat.com"),
                 otherAccountsPictures: [
