@@ -184,7 +184,7 @@ class LoginScreen extends StatelessWidget {
       emailValidator: (usuario) {
         return usuario.isEmpty ? "Usuario incorrecto" : null;
       },
-      logo: 'assets/img/ddg.png',
+      logo: 'assets/img/app_icon.png',
       onLogin: (LoginData data) {
         return _authUser(data, context);
       },

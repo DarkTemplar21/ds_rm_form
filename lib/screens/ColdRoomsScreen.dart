@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:ds_richmeat_form/model/ColdRoom.dart';
-import 'package:ds_richmeat_form/model/Form.dart';
+import 'package:ds_richmeat_form/model/TempForm.dart';
 import 'package:ds_richmeat_form/widgets/ColdRoomWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -72,27 +72,7 @@ class ColdRoomsScreen extends StatelessWidget {
         isInRange: true,
         isReviewed: true,
         temperatureRange: '-4 a 0'),
-    ColdRoom(
-        id: 8,
-        name: 'Temperado MP',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '-4 a 0'),
-    ColdRoom(
-        id: 8,
-        name: 'Temperado MP',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '-4 a 0'),
-    ColdRoom(
-        id: 8,
-        name: 'Temperado MP',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '-4 a 0'),
+
   ];
 
   @override

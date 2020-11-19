@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ds_richmeat_form/model/Form.dart';
+import 'package:ds_richmeat_form/model/TempForm.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,7 +14,7 @@ class FormScreen extends StatelessWidget {
           child: Column(
             children: [
               UserAccountsDrawerHeader(
-                currentAccountPicture: Image.asset("assets/img/ddg.png"),
+                currentAccountPicture: Image.asset("assets/img/app_icon.png"),
                 accountName: Text("ale"),
                 accountEmail: Text("ale@richmeat.com"),
                 otherAccountsPictures: [
