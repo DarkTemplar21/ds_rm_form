@@ -67,6 +67,40 @@ class TempForm {
     this.atemperado_mp_reviewed,
   });
 
-
-
+  Map<String, dynamic> toJson() {
+    return {
+      "created_date": created_date,
+      "reviewed_date": reviewed_date,
+      "status": status,
+      "created_by": created_by,
+      "reviewed_by": reviewed_by,
+      "anden_1y2_on": anden_1y2_on,
+      "anden_1y2_in_range": anden_1y2_in_range,
+      "anden_1y2_reviewed": anden_1y2_reviewed,
+      "conservacion_mp_on": conservacion_mp_on,
+      "conservacion_mp_in_range": conservacion_mp_in_range,
+      "conservacion_mp_reviewed": conservacion_mp_reviewed,
+      "conservacion_pt_on": conservacion_pt_on,
+      "conservacion_pt_in_range": conservacion_pt_in_range,
+      "conservacion_pt_reviewed": conservacion_pt_reviewed,
+      "anden_3y4_on": anden_3y4_on,
+      "anden_3y4_reviewed": anden_3y4_reviewed,
+      "anden_3y4_in_range": anden_3y4_in_range,
+      "pasillo_on": pasillo_on,
+      "pasillo_in_range": pasillo_in_range,
+      "pasillo_reviewed": pasillo_reviewed,
+      "empaque_on": empaque_on,
+      "empaque_reviewed": empaque_reviewed,
+      "empaque_in_range": empaque_in_range,
+      "preenfriamiento_pt_on": preenfriamiento_pt_on,
+      "preenfriamiento_pt_in_range": preenfriamiento_pt_in_range,
+      "preenfriamiento_pt_reviewed": preenfriamiento_pt_reviewed,
+      "proceso_on": proceso_on,
+      "proceso_in_range": proceso_in_range,
+      "proceso_reviewed": proceso_reviewed,
+      "atemperado_mp_on": atemperado_mp_on,
+      "atemperado_mp_in_range": atemperado_mp_in_range,
+      "atemperado_mp_reviewed": atemperado_mp_reviewed,
+    };
+  }
 }

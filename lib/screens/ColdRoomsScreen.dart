@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:ds_richmeat_form/model/ColdRoom.dart';
+import 'package:ds_richmeat_form/model/Form.dart';
 import 'package:ds_richmeat_form/widgets/ColdRoomWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -155,38 +156,83 @@ class PostFormFloatingActionButton extends StatelessWidget {
 
   final List<ColdRoom> coldRooms;
 
+  TempForm dameTempFormDesdeColdRooms(List<ColdRoom> coldRooms) {
+    int i = 0;
+    return TempForm(
+      anden_1y2_on: coldRooms[i].isOn ? 1 : 0,
+      anden_1y2_in_range: coldRooms[i].isInRange ? 1 : 0,
+      anden_1y2_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
+      conservacion_mp_on: coldRooms[i].isOn ? 1 : 0,
+      conservacion_mp_in_range: coldRooms[i].isInRange ? 1 : 0,
+      conservacion_mp_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
+      conservacion_pt_on: coldRooms[i].isOn ? 1 : 0,
+      conservacion_pt_in_range: coldRooms[i].isInRange ? 1 : 0,
+      conservacion_pt_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
+      anden_3y4_on: coldRooms[i].isOn ? 1 : 0,
+      anden_3y4_in_range: coldRooms[i].isInRange ? 1 : 0,
+      anden_3y4_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
+      pasillo_on: coldRooms[i].isOn ? 1 : 0,
+      pasillo_in_range: coldRooms[i].isInRange ? 1 : 0,
+      pasillo_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
+      empaque_on: coldRooms[i].isOn ? 1 : 0,
+      empaque_in_range: coldRooms[i].isInRange ? 1 : 0,
+      empaque_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
+      preenfriamiento_pt_on: coldRooms[i].isOn ? 1 : 0,
+      preenfriamiento_pt_in_range: coldRooms[i].isInRange ? 1 : 0,
+      preenfriamiento_pt_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
+      proceso_on: coldRooms[i].isOn ? 1 : 0,
+      proceso_in_range: coldRooms[i].isInRange ? 1 : 0,
+      proceso_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
+      atemperado_mp_on: coldRooms[i].isOn ? 1 : 0,
+      atemperado_mp_in_range: coldRooms[i].isInRange ? 1 : 0,
+      atemperado_mp_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
+      created_by: 'anonimous for now',
+      created_date: '',
+      reviewed_by: '',
+      reviewed_date: '',
+      status: 'enviado',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
+        TempForm tempForm = dameTempFormDesdeColdRooms(coldRooms);
         http
             .post(
           'https://rm-form-backend.herokuapp.com/richmeat/form',
-          body: jsonEncode(coldRooms),
+          body: jsonEncode(tempForm),
         )
             .then((response) {
-          print('El server dice ${response.body}');
-          // TODO q me envie aunque sea un 200 pa saber q le llego.
+          print('Con code ${response.statusCode}');
+          var formSubido = response.statusCode == 201;
+
           Scaffold.of(context).showSnackBar(
             SnackBar(
+              backgroundColor: formSubido ? Colors.green : Colors.red,
               content: Row(
                 children: [
-                  Icon(Icons.cloud_done),
+                  Icon(formSubido ? Icons.cloud_done : Icons.cloud_off),
                   SizedBox(
                     width: 13,
                   ),
-                  Text('Datos guardados correctamente.'),
+                  Text(
+                    formSubido
+                        ? 'Datos guardados correctamente.'
+                        : 'Error, el formulario no se ha guardado.',
+                  ),
                 ],
               ),
             ),
           );
         }).catchError((err) {
           print('Hubo error $err');
-          // TODO q me envie aunque sea un 500 pa saber q no pincho.
           Scaffold.of(context).showSnackBar(
             SnackBar(
-              content:
-                  Text('ha ocurrido un error, los datos no se han guardado.'),
+              backgroundColor: Colors.red,
+              content: Text('Error, los datos no se han guardado.\n'
+                  'Revise su coneccion a internet.'),
             ),
           );
         });
