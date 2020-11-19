@@ -1,9 +1,8 @@
+import 'dart:convert';
+
 import 'package:ds_richmeat_form/model/Form.dart';
-import 'package:ds_richmeat_form/model/FormRM.dart';
-import 'package:ds_richmeat_form/screens/ColdRoomsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class FormScreen extends StatelessWidget {
   FormScreen();
@@ -18,6 +17,9 @@ class FormScreen extends StatelessWidget {
                 currentAccountPicture: Image.asset("assets/img/ddg.png"),
                 accountName: Text("ale"),
                 accountEmail: Text("ale@richmeat.com"),
+                otherAccountsPictures: [
+                  Image.asset("assets/img/temperature_form.png"),
+                ],
               ),
               Text("Formularios"),
               ListTile(
@@ -50,7 +52,8 @@ class FormScreen extends StatelessWidget {
                 children: snapshot.data
                     .map((tempForm) => ListTile(
                           title: Text("Revisado por:${tempForm.reviewed_by}"),
-                          leading: Image.asset("assets/img/temperature_form.png"),
+                          leading:
+                              Image.asset("assets/img/temperature_form.png"),
                           subtitle: Text(
                               "Fecha de Creacion: ${tempForm.reviewed_date}"),
                         ))
