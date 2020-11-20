@@ -168,7 +168,7 @@ class PostFormFloatingActionButton extends StatelessWidget {
       atemperado_mp_on: coldRooms[i].isOn ? 1 : 0,
       atemperado_mp_in_range: coldRooms[i].isInRange ? 1 : 0,
       atemperado_mp_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      created_by: 'anonimous for now',
+      created_by: '',
       created_date: '',
       reviewed_by: '',
       reviewed_date: '',
