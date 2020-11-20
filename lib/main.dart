@@ -98,7 +98,7 @@ class LoginScreen extends StatelessWidget {
       _isLogged = true;
       print('status: ${response.statusCode} body:${response.body}');
       if(response.statusCode == 200){
-        var _authProvider = Provider.of<AuthProvider>(context);
+        var _authProvider = Provider.of<AuthProvider>(context,listen: false);
         _authProvider.authToken = "Bearer ${response.body.split(":")[1]}";
         return null;
 
