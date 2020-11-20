@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:ds_richmeat_form/model/ColdRoom.dart';
 import 'package:ds_richmeat_form/model/TempForm.dart';
+import 'package:ds_richmeat_form/providers/AuthProvider.dart';
 import 'package:ds_richmeat_form/widgets/ColdRoomWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ColdRoomsScreen extends StatelessWidget {
   final double _fixedWidth = 130.0;
@@ -166,7 +168,7 @@ class PostFormFloatingActionButton extends StatelessWidget {
       atemperado_mp_on: coldRooms[i].isOn ? 1 : 0,
       atemperado_mp_in_range: coldRooms[i].isInRange ? 1 : 0,
       atemperado_mp_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      created_by: 'anonimous for now',
+      created_by: '',
       created_date: '',
       reviewed_by: '',
       reviewed_date: '',
@@ -176,6 +178,7 @@ class PostFormFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var _authProvider = Provider.of<AuthProvider>(context);
     return FloatingActionButton(
       onPressed: () {
         TempForm tempForm = dameTempFormDesdeColdRooms(coldRooms);
@@ -183,6 +186,7 @@ class PostFormFloatingActionButton extends StatelessWidget {
             .post(
           'https://rm-form-backend.herokuapp.com/richmeat/form',
           body: jsonEncode(tempForm),
+          headers: {'Authorization': _authProvider.authToken},
         )
             .then((response) {
           print('Con code ${response.statusCode}');
