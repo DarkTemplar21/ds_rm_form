@@ -84,7 +84,7 @@ class LoginScreen extends StatelessWidget {
     Navigator.push(context, FormMenuRoute());
   }
 
-  Future<String> _authUser(LoginData data, BuildContext context,AuthProvider authProvider) {
+  Future<String> _authUser(LoginData data, BuildContext context) {
     _isLogged = false;
     return http
         .post(
@@ -97,8 +97,13 @@ class LoginScreen extends StatelessWidget {
         .then((response) {
       _isLogged = true;
       print('status: ${response.statusCode} body:${response.body}');
-      authProvider.authToken = "Bearer ${response.body.split(":")[1]}";
-      return null;
+      if(response.statusCode == 200){
+        var _authProvider = Provider.of<AuthProvider>(context);
+        _authProvider.authToken = "Bearer ${response.body.split(":")[1]}";
+        return null;
+
+      }
+      return "Error de Autenticación";
     }).catchError((err) {
       return Future.value('Error de RED.');
     });
@@ -139,7 +144,6 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _authProvider = Provider.of<AuthProvider>(context);
     return FlutterLogin(
       title: 'DS FORMS',
       messages: LoginMessages(
@@ -153,7 +157,7 @@ class LoginScreen extends StatelessWidget {
       },
       logo: 'assets/img/app_icon.png',
       onLogin: (LoginData data) {
-        return _authUser(data, context,_authProvider);
+        return _authUser(data, context);
       },
       onSignup: null,
       onSubmitAnimationCompleted: () {
