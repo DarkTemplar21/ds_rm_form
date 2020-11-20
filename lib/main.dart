@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) {
-      return  AuthProvider();
+        return AuthProvider();
       },
       child: MaterialApp(
         title: 'Login Demo',
@@ -74,7 +74,10 @@ const users = const {
 };
 
 class LoginScreen extends StatelessWidget {
-  static const _url = 'https://rm-form-backend.herokuapp.com/richmeat/login';
+  static const _loginUrl =
+      'https://rm-form-backend.herokuapp.com/richmeat/login';
+  static const _signUpUrl =
+      'https://rm-form-backend.herokuapp.com/richmeat/sign_up';
   bool _isLogged = false;
 
   Duration get loginTime => Duration(milliseconds: 2250);
@@ -88,7 +91,7 @@ class LoginScreen extends StatelessWidget {
     _isLogged = false;
     return http
         .post(
-      _url,
+      _loginUrl,
       headers: {'content-type': 'application/json'},
       body: json.encode(
         {'userName': data.name, 'password': data.password},
@@ -97,17 +100,15 @@ class LoginScreen extends StatelessWidget {
         .then((response) {
       _isLogged = true;
       print('status: ${response.statusCode} body:${response.body}');
-      if(response.statusCode == 200){
-        var _authProvider = Provider.of<AuthProvider>(context,listen: false);
+      if (response.statusCode == 200) {
+        var _authProvider = Provider.of<AuthProvider>(context, listen: false);
         _authProvider.authToken = "Bearer ${response.body.split(":")[1]}";
         return null;
-
       }
       return "Error de Autenticación";
     }).catchError((err) {
       return Future.value('Error de RED.');
     });
-
   }
 
   Future<String> _recoverPassword(String name) {
@@ -159,7 +160,10 @@ class LoginScreen extends StatelessWidget {
       onLogin: (LoginData data) {
         return _authUser(data, context);
       },
-      onSignup: null,
+      onSignup: (LoginData data) {
+
+        return _singUpUser(data, context);
+      },
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => FormMenuScreen(""),
@@ -167,5 +171,30 @@ class LoginScreen extends StatelessWidget {
       },
       onRecoverPassword: _recoverPassword,
     );
+  }
+
+  Future<String> _singUpUser(LoginData data, BuildContext context) {
+    _isLogged = false;
+    return http
+        .post(
+      _signUpUrl,
+      headers: {'content-type': 'application/json'},
+      body: json.encode(
+        {'userName': data.name, 'password': data.password},
+      ),
+    )
+        .then((response) {
+      _isLogged = true;
+      if (response.statusCode == 201) {
+        var _authProvider = Provider.of<AuthProvider>(context, listen: false);
+        _authProvider.authToken = "Bearer ${response.body.split(":")[1]}";
+        return null;
+      } else if (response.statusCode == 406) {
+        return "Error el usuario ya existe.";
+      }
+      return "Error desconocido";
+    }).catchError((err) {
+      return Future.value('Error de RED.');
+    });
   }
 }
