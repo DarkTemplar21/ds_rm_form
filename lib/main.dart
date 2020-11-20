@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:ds_richmeat_form/model/ColdRoom.dart';
 import 'package:ds_richmeat_form/providers/AuthProvider.dart';
+import 'package:ds_richmeat_form/screens/ColdRoomsScreen.dart';
 import 'package:ds_richmeat_form/screens/FormMenuScreen.dart';
+import 'package:ds_richmeat_form/screens/FormsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_login/flutter_login.dart';
@@ -26,6 +29,11 @@ class MyApp extends StatelessWidget {
         return AuthProvider();
       },
       child: MaterialApp(
+        routes: {
+          '/formMenu': (context) => FormMenuScreen(""),
+          '/coldRooms': (context) => ColdRoomsScreen(),
+          '/form': (context) => FormScreen(),
+        },
         title: 'Login Demo',
         theme: ThemeData(
           // brightness: Brightness.dark,
@@ -84,7 +92,7 @@ class LoginScreen extends StatelessWidget {
 
   void irAlMenu(BuildContext context) async {
     Navigator.pop(context);
-    Navigator.push(context, FormMenuRoute());
+    Navigator.pushNamed(context, "/formMenu");
   }
 
   Future<String> _authUser(LoginData data, BuildContext context) {
@@ -165,9 +173,7 @@ class LoginScreen extends StatelessWidget {
         return _singUpUser(data, context);
       },
       onSubmitAnimationCompleted: () {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => FormMenuScreen(""),
-        ));
+        Navigator.of(context).popAndPushNamed("/formMenu");
       },
       onRecoverPassword: _recoverPassword,
     );
