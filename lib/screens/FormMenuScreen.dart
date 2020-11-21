@@ -45,7 +45,7 @@ class FormMenuScreen extends StatelessWidget {
             Text("Formularios"),
             ListTile(
               title: Text("Revisados"),
-              onTap: (){ Navigator.pushNamed(context, "/form");},
+              onTap: (){ Navigator.popAndPushNamed(context, "/form");},
               leading: Image.asset("assets/img/temperature_form.png"),
             ),
             ListTile(
