@@ -14,7 +14,8 @@ class ColdRoom {
     this.isReviewed,
     this.temperatureRange,
   });
-  Map<String, dynamic> toEncodable() {
+
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
@@ -23,9 +24,5 @@ class ColdRoom {
       'isReviewed': isReviewed,
       'temperatureRange': temperatureRange,
     };
-  }
-
-  Map<String, dynamic> toJson() {
-    return toEncodable();
   }
 }
