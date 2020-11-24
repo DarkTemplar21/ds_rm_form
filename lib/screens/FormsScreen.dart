@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:ds_richmeat_form/model/TempForm.dart';
+import 'package:ds_richmeat_form/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class FormScreen extends StatelessWidget {
   FormScreen();
@@ -65,8 +67,10 @@ class FormScreen extends StatelessWidget {
   }
 
   Future<List<TempForm>> getForms(BuildContext context) async {
+    var _authProvider = Provider.of<AuthProvider>(context);
+
     String url = 'http://rm-form-backend.herokuapp.com/richmeat/forms';
-    return http.get(url).then((response) {
+    return http.get(url,headers: {'Authorization': _authProvider.authToken},).then((response) {
       List<dynamic> formMap = json.decode(response.body);
       List<TempForm> tempForms = formMap.map((tempForm) {
         Map<String, dynamic> mForm = tempForm as Map<String, dynamic>;

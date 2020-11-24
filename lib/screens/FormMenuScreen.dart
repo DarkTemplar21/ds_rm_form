@@ -45,10 +45,7 @@ class FormMenuScreen extends StatelessWidget {
             Text("Formularios"),
             ListTile(
               title: Text("Revisados"),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(FormScreenRoute());
-              },
+              onTap: (){ Navigator.popAndPushNamed(context, "/form");},
               leading: Image.asset("assets/img/temperature_form.png"),
             ),
             ListTile(
@@ -67,7 +64,7 @@ class FormMenuScreen extends StatelessWidget {
                 (formRM) => Card(
                   child: InkWell(
                     onTap: () {
-                      Navigator.of(context).push(formRM.screen);
+                      Navigator.of(context).pushNamed("/coldRooms");
                     },
                     child: ListTile(
                       title: Text(formRM.name),
@@ -87,4 +84,5 @@ class FormMenuRoute extends MaterialPageRoute {
       : super(builder: (context) {
           return FormMenuScreen("Formularios");
         });
+  
 }

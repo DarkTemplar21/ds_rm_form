@@ -1,10 +1,15 @@
 import 'dart:convert';
 
+import 'package:ds_richmeat_form/model/ColdRoom.dart';
+import 'package:ds_richmeat_form/providers/AuthProvider.dart';
+import 'package:ds_richmeat_form/screens/ColdRoomsScreen.dart';
 import 'package:ds_richmeat_form/screens/FormMenuScreen.dart';
+import 'package:ds_richmeat_form/screens/FormsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -19,44 +24,54 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login Demo',
-      theme: ThemeData(
-        // brightness: Brightness.dark,
-        primarySwatch: Colors.deepPurple,
-        accentColor: Colors.orange,
-        cursorColor: Colors.orange,
-        // fontFamily: 'SourceSansPro',
-        textTheme: TextTheme(
-          display2: TextStyle(
-            fontFamily: 'OpenSans',
-            fontSize: 45.0,
-            // fontWeight: FontWeight.w400,
-            color: Colors.orange,
+    return ChangeNotifierProvider(
+      create: (context) {
+        return AuthProvider();
+      },
+      child: MaterialApp(
+        routes: {
+          '/formMenu': (context) => FormMenuScreen(""),
+          '/coldRooms': (context) => ColdRoomsScreen(),
+          '/form': (context) => FormScreen(),
+        },
+        title: 'Login Demo',
+        theme: ThemeData(
+          // brightness: Brightness.dark,
+          primarySwatch: Colors.deepPurple,
+          accentColor: Colors.orange,
+          cursorColor: Colors.orange,
+          // fontFamily: 'SourceSansPro',
+          textTheme: TextTheme(
+            display2: TextStyle(
+              fontFamily: 'OpenSans',
+              fontSize: 45.0,
+              // fontWeight: FontWeight.w400,
+              color: Colors.orange,
+            ),
+            button: TextStyle(
+              // OpenSans is similar to NotoSans but the uppercases look a bit better IMO
+              fontFamily: 'OpenSans',
+            ),
+            caption: TextStyle(
+              fontFamily: 'NotoSans',
+              fontSize: 12.0,
+              fontWeight: FontWeight.normal,
+              color: Colors.deepPurple[300],
+            ),
+            display4: TextStyle(fontFamily: 'Quicksand'),
+            display3: TextStyle(fontFamily: 'Quicksand'),
+            display1: TextStyle(fontFamily: 'Quicksand'),
+            headline: TextStyle(fontFamily: 'NotoSans'),
+            title: TextStyle(fontFamily: 'NotoSans'),
+            subhead: TextStyle(fontFamily: 'NotoSans'),
+            body2: TextStyle(fontFamily: 'NotoSans'),
+            body1: TextStyle(fontFamily: 'NotoSans'),
+            subtitle: TextStyle(fontFamily: 'NotoSans'),
+            overline: TextStyle(fontFamily: 'NotoSans'),
           ),
-          button: TextStyle(
-            // OpenSans is similar to NotoSans but the uppercases look a bit better IMO
-            fontFamily: 'OpenSans',
-          ),
-          caption: TextStyle(
-            fontFamily: 'NotoSans',
-            fontSize: 12.0,
-            fontWeight: FontWeight.normal,
-            color: Colors.deepPurple[300],
-          ),
-          display4: TextStyle(fontFamily: 'Quicksand'),
-          display3: TextStyle(fontFamily: 'Quicksand'),
-          display1: TextStyle(fontFamily: 'Quicksand'),
-          headline: TextStyle(fontFamily: 'NotoSans'),
-          title: TextStyle(fontFamily: 'NotoSans'),
-          subhead: TextStyle(fontFamily: 'NotoSans'),
-          body2: TextStyle(fontFamily: 'NotoSans'),
-          body1: TextStyle(fontFamily: 'NotoSans'),
-          subtitle: TextStyle(fontFamily: 'NotoSans'),
-          overline: TextStyle(fontFamily: 'NotoSans'),
         ),
+        home: LoginScreen(),
       ),
-      home: LoginScreen(),
     );
   }
 }
@@ -67,43 +82,41 @@ const users = const {
 };
 
 class LoginScreen extends StatelessWidget {
-  static const _url = 'https://rm-form-backend.herokuapp.com/richmeat/login';
+  static const _loginUrl =
+      'https://rm-form-backend.herokuapp.com/richmeat/login';
+  static const _signUpUrl =
+      'https://rm-form-backend.herokuapp.com/richmeat/sign_up';
   bool _isLogged = false;
 
   Duration get loginTime => Duration(milliseconds: 2250);
 
   void irAlMenu(BuildContext context) async {
     Navigator.pop(context);
-    Navigator.push(context, FormMenuRoute());
+    Navigator.pushNamed(context, "/formMenu");
   }
 
   Future<String> _authUser(LoginData data, BuildContext context) {
     _isLogged = false;
     return http
         .post(
-      _url,
+      _loginUrl,
       headers: {'content-type': 'application/json'},
       body: json.encode(
         {'userName': data.name, 'password': data.password},
       ),
     )
         .then((response) {
+      _isLogged = true;
       print('status: ${response.statusCode} body:${response.body}');
-      return null;
       if (response.statusCode == 200) {
-        if (response.body == 'login:true') {
-          _isLogged = true;
-          return null;
-        } else {
-          return Future.value('Usuario o Contraseña incorrecta.');
-        }
-      } else {
-        return Future.value('Error de Comunicación.');
+        var _authProvider = Provider.of<AuthProvider>(context, listen: false);
+        _authProvider.authToken = "Bearer ${response.body.split(":")[1]}";
+        return null;
       }
+      return "Error de Autenticación";
     }).catchError((err) {
       return Future.value('Error de RED.');
     });
-    ;
   }
 
   Future<String> _recoverPassword(String name) {
@@ -115,39 +128,6 @@ class LoginScreen extends StatelessWidget {
       return null;
     });
   }
-
-  //---------------------------------------------
-//  Future<bool> login(BuildContext context, String usuario, String clave) async {
-//    http
-//        .post(
-//      _url,
-//      headers: {'content-type': 'application/json'},
-//      body: json.encode(
-//        {'userName': usuario, 'password': clave},
-//      ),
-//    )
-//        .then((response) {
-//      print('status::${response.statusCode}');
-//      if (response.statusCode == 201) {
-//        if (response.body == 'login:true') {
-//          irAlMenu(context);
-//        } else {
-//          showMyDialog(
-//              context, 'Error', 'Usuario o contraseña incorrecta.', 'Aceptar');
-//        }
-//      } else {
-//        showMyDialog(
-//            context, 'Error', 'Hay un problema en la comunicación.', 'Aceptar');
-//      }
-//    }).catchError((err) {
-//      showMyDialog(
-//          context,
-//          'Error',
-//          'Ha ocurrido un error de red.'
-//              '\nAsegúrese de estar conectado a internet.',
-//          'Aceptar');
-//    });
-//  }
 
   void showMyDialog(
       BuildContext context, String titulo, String mensaje, String accion) {
@@ -188,13 +168,39 @@ class LoginScreen extends StatelessWidget {
       onLogin: (LoginData data) {
         return _authUser(data, context);
       },
-      onSignup: null,
+      onSignup: (LoginData data) {
+
+        return _singUpUser(data, context);
+      },
       onSubmitAnimationCompleted: () {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => FormMenuScreen(""),
-        ));
+        Navigator.of(context).popAndPushNamed("/formMenu");
       },
       onRecoverPassword: _recoverPassword,
     );
+  }
+
+  Future<String> _singUpUser(LoginData data, BuildContext context) {
+    _isLogged = false;
+    return http
+        .post(
+      _signUpUrl,
+      headers: {'content-type': 'application/json'},
+      body: json.encode(
+        {'userName': data.name, 'password': data.password},
+      ),
+    )
+        .then((response) {
+      _isLogged = true;
+      if (response.statusCode == 201) {
+        var _authProvider = Provider.of<AuthProvider>(context, listen: false);
+        _authProvider.authToken = "Bearer ${response.body.split(":")[1]}";
+        return null;
+      } else if (response.statusCode == 406) {
+        return "Error el usuario ya existe.";
+      }
+      return "Error desconocido";
+    }).catchError((err) {
+      return Future.value('Error de RED.');
+    });
   }
 }
