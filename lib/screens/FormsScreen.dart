@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 class FormScreen extends StatelessWidget {
   FormScreen();
 
+  bool estoyEsperando = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,6 +82,10 @@ class FormScreen extends StatelessWidget {
               return Column(
                 children: snapshot.data
                     .map((tempForm) => ListTile(
+                          onTap: () {
+                            Navigator.of(context).pushNamed('/coldRooms',
+                                arguments: tempForm.id);
+                          },
                           title: Text("Revisado por:${tempForm.created_by}"),
                           leading:
                               Image.asset("assets/img/temperature_form.png"),
@@ -106,6 +112,7 @@ class FormScreen extends StatelessWidget {
       List<TempForm> tempForms = formMap.map((tempForm) {
         Map<String, dynamic> mForm = tempForm as Map<String, dynamic>;
         return TempForm(
+            id: mForm["id"] as int,
             created_date: mForm["created_date"] as String,
             reviewed_date: mForm["reviewed_date"] as String,
             status: mForm["status"] as String,
