@@ -1,4 +1,5 @@
 class TempForm {
+  int id;
   String created_date;
   String reviewed_date;
   String status;
@@ -33,6 +34,7 @@ class TempForm {
   int atemperado_mp_reviewed;
 
   TempForm({
+    this.id,
     this.created_date,
     this.reviewed_date,
     this.status,
@@ -69,6 +71,7 @@ class TempForm {
 
   Map<String, dynamic> toJson() {
     return {
+      "id": id,
       "created_date": created_date,
       "reviewed_date": reviewed_date,
       "status": status,
