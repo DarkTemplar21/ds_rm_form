@@ -9,6 +9,8 @@ import 'package:provider/provider.dart';
 class FormScreen extends StatelessWidget {
   FormScreen();
 
+  bool estoyEsperando = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,19 +20,47 @@ class FormScreen extends StatelessWidget {
               UserAccountsDrawerHeader(
                 currentAccountPicture: Image.asset("assets/img/app_icon.png"),
                 accountName: Text("ale"),
-                accountEmail: Text("ale@richmeat.com"),
+                accountEmail: Text("alee@richmeat.com"),
                 otherAccountsPictures: [
                   Image.asset("assets/img/temperature_form.png"),
                 ],
               ),
-              Text("Formularios"),
-              ListTile(
-                title: Text("Revisados"),
-                leading: Image.asset("assets/img/temperature_form.png"),
-              ),
-              ListTile(
-                title: Text("Pendientes a Revisar"),
-                leading: Image.asset("assets/img/temperature_form.png"),
+              Padding(
+                padding: EdgeInsets.all(6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 10),
+                      child: Text(
+                        "Formularios",
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                    ),
+                    // Divider(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        title: Text("Revisados"),
+                        leading: Image.asset("assets/img/temperature_form.png"),
+                      ),
+                    ),
+                    ListTile(
+                      title: Text("Pendientes a Revisar"),
+                      leading: Image.asset("assets/img/temperature_form.png"),
+                    ),
+                    Divider(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 10),
+                      child: Text(
+                        "Acerca De",
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                    ),
+                  ],
+                ),
               )
             ],
           ),
@@ -49,11 +79,14 @@ class FormScreen extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else {
-              print("dentro de else");
               return Column(
                 children: snapshot.data
                     .map((tempForm) => ListTile(
-                          title: Text("Revisado por:${tempForm.reviewed_by}"),
+                          onTap: () {
+                            Navigator.of(context).pushNamed('/coldRooms',
+                                arguments: tempForm.id);
+                          },
+                          title: Text("Revisado por:${tempForm.created_by}"),
                           leading:
                               Image.asset("assets/img/temperature_form.png"),
                           subtitle: Text(
@@ -70,11 +103,16 @@ class FormScreen extends StatelessWidget {
     var _authProvider = Provider.of<AuthProvider>(context);
 
     String url = 'http://rm-form-backend.herokuapp.com/richmeat/forms';
-    return http.get(url,headers: {'Authorization': _authProvider.authToken},).then((response) {
+    return http.get(
+      url,
+      headers: {'Authorization': _authProvider.authToken},
+    ).then((response) {
+      print(response.body);
       List<dynamic> formMap = json.decode(response.body);
       List<TempForm> tempForms = formMap.map((tempForm) {
         Map<String, dynamic> mForm = tempForm as Map<String, dynamic>;
         return TempForm(
+            id: mForm["id"] as int,
             created_date: mForm["created_date"] as String,
             reviewed_date: mForm["reviewed_date"] as String,
             status: mForm["status"] as String,
