@@ -113,7 +113,8 @@ class _ColdRoomsScreenState extends State<ColdRoomsScreen> {
       estaCargando = true;
     });
     String urlForm =
-        'https://rm-form-backend.herokuapp.com/richmeat/form_data/$id';
+        // 'https://rm-form-backend.herokuapp.com/richmeat/form_by_id/$id';
+        'https://rm-form-backend.herokuapp.com/richmeat/form_by_id';
     var _authProvider = Provider.of<AuthProvider>(
       context,
       listen: false,
