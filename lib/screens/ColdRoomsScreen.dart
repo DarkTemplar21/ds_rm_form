@@ -16,6 +16,7 @@ class ColdRoomsScreen extends StatefulWidget {
 class _ColdRoomsScreenState extends State<ColdRoomsScreen> {
   final double _fixedWidth = 130.0;
   List<ColdRoom> coldRooms = [];
+  TempForm res;
   bool estaCargando = false;
   bool huboError = false;
 
@@ -101,6 +102,24 @@ class _ColdRoomsScreenState extends State<ColdRoomsScreen> {
         .toList();
   }
 
+  List<ColdRoom> dameColdRoomsDesdeList(
+      List<Map<String, dynamic>> jsonColdRooms) {
+    print('desde list: $jsonColdRooms');
+    // List<Map<String, dynamic>> datos =
+    //     jsonColdRooms as List<Map<String, dynamic>>;
+    return jsonColdRooms
+        .map((dicc) => ColdRoom(
+              // TODO convertir los datos q no son str
+              name: dicc['name'],
+              isReviewed: dicc['isReviewed'],
+              id: dicc['id'],
+              isOn: dicc['isOn'],
+              isInRange: dicc['isInRange'],
+              temperatureRange: dicc['temperatureRange'],
+            ))
+        .toList();
+  }
+
   void mostrarSnack(BuildContext context, String texto, MaterialColor color) {
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(texto),
@@ -119,12 +138,34 @@ class _ColdRoomsScreenState extends State<ColdRoomsScreen> {
       context,
       listen: false,
     );
-    http.get(
+    print('pidiendo form $id');
+    http
+        .post(
       urlForm,
       headers: {'Authorization': _authProvider.authToken},
-    ).then((response) {
+      body: "$id",
+    )
+        .then((response) {
       if (response.statusCode == 200) {
-        coldRooms = dameColdRoomsDesdeJson(response.body);
+        print('response.body=${response.body}');
+        Map<String, dynamic> tempFormData = jsonDecode(response.body);
+        print('\n\n\n\n\n\n');
+        print('collll');
+        print(tempFormData['coldRooms']);
+        coldRooms = dameColdRoomsDesdeList(tempFormData['coldRooms']);
+        res = TempForm.dameTempFormDesdeColdRooms(coldRooms);
+        res.id = tempFormData["id"] as int;
+        res.created_date = tempFormData["createdDate"] as String;
+        res.reviewed_date = tempFormData["reviewedDate"] as String;
+        res.status = tempFormData["status"] as String;
+        res.created_by = tempFormData["createdBy"] as String;
+        res.reviewed_by = tempFormData["reviewedBy"] as String;
+        print('colruuums= $coldRooms');
+        if (this.mounted) {
+          setState(() {
+            estaCargando = false;
+          });
+        }
       } else {
         mostrarSnack(
             context,
@@ -132,25 +173,21 @@ class _ColdRoomsScreenState extends State<ColdRoomsScreen> {
             'intente mas tarde.',
             Colors.red);
       }
-      setState(() {
-        estaCargando = false;
-      });
     }).catchError((err) {
-      setState(() {
-        estaCargando = false;
-        huboError = true;
-      });
+      print('errrrrror');
+      print(err);
+      if (this.mounted) {
+        setState(() {
+          estaCargando = false;
+          huboError = true;
+        });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     int formId = ModalRoute.of(context).settings.arguments;
-
-    // print('arguments=$coldRooms');
-    // if (coldRooms == null) {
-    //   coldRooms = initialColdRooms;
-    // }
     if (formId == null) {
       coldRooms = initialColdRooms;
     } else {
@@ -239,44 +276,6 @@ class PostFormFloatingActionButton extends StatelessWidget {
   final List<ColdRoom> coldRooms;
   final bool estaCargando;
 
-  TempForm dameTempFormDesdeColdRooms(List<ColdRoom> coldRooms) {
-    int i = 0;
-    return TempForm(
-      anden_1y2_on: coldRooms[i].isOn ? 1 : 0,
-      anden_1y2_in_range: coldRooms[i].isInRange ? 1 : 0,
-      anden_1y2_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      conservacion_mp_on: coldRooms[i].isOn ? 1 : 0,
-      conservacion_mp_in_range: coldRooms[i].isInRange ? 1 : 0,
-      conservacion_mp_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      conservacion_pt_on: coldRooms[i].isOn ? 1 : 0,
-      conservacion_pt_in_range: coldRooms[i].isInRange ? 1 : 0,
-      conservacion_pt_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      anden_3y4_on: coldRooms[i].isOn ? 1 : 0,
-      anden_3y4_in_range: coldRooms[i].isInRange ? 1 : 0,
-      anden_3y4_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      pasillo_on: coldRooms[i].isOn ? 1 : 0,
-      pasillo_in_range: coldRooms[i].isInRange ? 1 : 0,
-      pasillo_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      empaque_on: coldRooms[i].isOn ? 1 : 0,
-      empaque_in_range: coldRooms[i].isInRange ? 1 : 0,
-      empaque_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      preenfriamiento_pt_on: coldRooms[i].isOn ? 1 : 0,
-      preenfriamiento_pt_in_range: coldRooms[i].isInRange ? 1 : 0,
-      preenfriamiento_pt_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      proceso_on: coldRooms[i].isOn ? 1 : 0,
-      proceso_in_range: coldRooms[i].isInRange ? 1 : 0,
-      proceso_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      atemperado_mp_on: coldRooms[i].isOn ? 1 : 0,
-      atemperado_mp_in_range: coldRooms[i].isInRange ? 1 : 0,
-      atemperado_mp_reviewed: coldRooms[i++].isReviewed ? 1 : 0,
-      created_by: '',
-      created_date: '',
-      reviewed_by: '',
-      reviewed_date: '',
-      status: 'enviado',
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     var _authProvider = Provider.of<AuthProvider>(context);
@@ -284,13 +283,14 @@ class PostFormFloatingActionButton extends StatelessWidget {
       onPressed: estaCargando
           ? null
           : () {
-              TempForm tempForm = dameTempFormDesdeColdRooms(coldRooms);
+              TempForm tempForm =
+                  TempForm.dameTempFormDesdeColdRooms(coldRooms);
+              String formulario = jsonEncode(tempForm);
               http.post(
                 'https://rm-form-backend.herokuapp.com/richmeat/form',
-                body: jsonEncode(tempForm),
+                body: formulario,
                 headers: {'Authorization': _authProvider.authToken},
               ).then((response) {
-                print('Con code ${response.statusCode}');
                 var formSubido = response.statusCode == 201;
 
                 Scaffold.of(context).showSnackBar(

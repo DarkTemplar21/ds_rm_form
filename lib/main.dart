@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:ds_richmeat_form/model/ColdRoom.dart';
 import 'package:ds_richmeat_form/providers/AuthProvider.dart';
+import 'package:ds_richmeat_form/providers/drawerProvider.dart';
 import 'package:ds_richmeat_form/screens/ColdRoomsScreen.dart';
 import 'package:ds_richmeat_form/screens/FormMenuScreen.dart';
 import 'package:ds_richmeat_form/screens/FormsScreen.dart';
@@ -28,49 +28,54 @@ class MyApp extends StatelessWidget {
       create: (context) {
         return AuthProvider();
       },
-      child: MaterialApp(
-        routes: {
-          '/formMenu': (context) => FormMenuScreen(""),
-          '/coldRooms': (context) => ColdRoomsScreen(),
-          '/form': (context) => FormScreen(),
+      child: ChangeNotifierProvider(
+        create: (context) {
+          return DrawerProvider();
         },
-        title: 'Login Demo',
-        theme: ThemeData(
-          // brightness: Brightness.dark,
-          primarySwatch: Colors.deepPurple,
-          accentColor: Colors.orange,
-          cursorColor: Colors.orange,
-          // fontFamily: 'SourceSansPro',
-          textTheme: TextTheme(
-            display2: TextStyle(
-              fontFamily: 'OpenSans',
-              fontSize: 45.0,
-              // fontWeight: FontWeight.w400,
-              color: Colors.orange,
+        child: MaterialApp(
+          routes: {
+            '/formMenu': (context) => FormMenuScreen(""),
+            '/coldRooms': (context) => ColdRoomsScreen(),
+            '/form': (context) => FormScreen(),
+          },
+          title: 'Login Demo',
+          theme: ThemeData(
+            // brightness: Brightness.dark,
+            primarySwatch: Colors.deepPurple,
+            accentColor: Colors.orange,
+            cursorColor: Colors.orange,
+            // fontFamily: 'SourceSansPro',
+            textTheme: TextTheme(
+              display2: TextStyle(
+                fontFamily: 'OpenSans',
+                fontSize: 45.0,
+                // fontWeight: FontWeight.w400,
+                color: Colors.orange,
+              ),
+              button: TextStyle(
+                // OpenSans is similar to NotoSans but the uppercases look a bit better IMO
+                fontFamily: 'OpenSans',
+              ),
+              caption: TextStyle(
+                fontFamily: 'NotoSans',
+                fontSize: 12.0,
+                fontWeight: FontWeight.normal,
+                color: Colors.deepPurple[300],
+              ),
+              display4: TextStyle(fontFamily: 'Quicksand'),
+              display3: TextStyle(fontFamily: 'Quicksand'),
+              display1: TextStyle(fontFamily: 'Quicksand'),
+              headline: TextStyle(fontFamily: 'NotoSans'),
+              title: TextStyle(fontFamily: 'NotoSans'),
+              subhead: TextStyle(fontFamily: 'NotoSans'),
+              body2: TextStyle(fontFamily: 'NotoSans'),
+              body1: TextStyle(fontFamily: 'NotoSans'),
+              subtitle: TextStyle(fontFamily: 'NotoSans'),
+              overline: TextStyle(fontFamily: 'NotoSans'),
             ),
-            button: TextStyle(
-              // OpenSans is similar to NotoSans but the uppercases look a bit better IMO
-              fontFamily: 'OpenSans',
-            ),
-            caption: TextStyle(
-              fontFamily: 'NotoSans',
-              fontSize: 12.0,
-              fontWeight: FontWeight.normal,
-              color: Colors.deepPurple[300],
-            ),
-            display4: TextStyle(fontFamily: 'Quicksand'),
-            display3: TextStyle(fontFamily: 'Quicksand'),
-            display1: TextStyle(fontFamily: 'Quicksand'),
-            headline: TextStyle(fontFamily: 'NotoSans'),
-            title: TextStyle(fontFamily: 'NotoSans'),
-            subhead: TextStyle(fontFamily: 'NotoSans'),
-            body2: TextStyle(fontFamily: 'NotoSans'),
-            body1: TextStyle(fontFamily: 'NotoSans'),
-            subtitle: TextStyle(fontFamily: 'NotoSans'),
-            overline: TextStyle(fontFamily: 'NotoSans'),
           ),
+          home: LoginScreen(),
         ),
-        home: LoginScreen(),
       ),
     );
   }
@@ -95,6 +100,17 @@ class LoginScreen extends StatelessWidget {
     Navigator.pushNamed(context, "/formMenu");
   }
 
+  void actualizaLoginProviderFromServerData(
+      BuildContext context, String nombre, String data) {
+    //Actualiza el provider de login y signin con la info que me da el servidor
+    // data es el response.body para las peticiones de login y signin
+    var userData = jsonDecode(data) as Map<String, dynamic>;
+    String token = userData['token'] as String;
+    String rol = userData['role'] as String;
+    var _autProv = Provider.of<AuthProvider>(context, listen: false);
+    _autProv.setAuth('Bearer $token', nombre, rol);
+  }
+
   Future<String> _authUser(LoginData data, BuildContext context) {
     _isLogged = false;
     return http
@@ -107,10 +123,14 @@ class LoginScreen extends StatelessWidget {
     )
         .then((response) {
       _isLogged = true;
-      print('status: ${response.statusCode} body:${response.body}');
-      if (response.statusCode == 200) {
-        var _authProvider = Provider.of<AuthProvider>(context, listen: false);
-        _authProvider.authToken = "Bearer ${response.body.split(":")[1]}";
+      if (response.statusCode == 201) {
+        actualizaLoginProviderFromServerData(context, data.name, response.body);
+        // var _authProvider = Provider.of<AuthProvider>(context, listen: false);
+        // List<String> respuesta = response.body.split(",");
+        // String token = respuesta[0].split(":")[1];
+        // String rol = respuesta[1].substring(4);
+        // _authProvider.setAuth('Bearer $token', rol);
+        // _authProvider.authToken = "Bearer ${respuesta[0].split(":")[1]}";
         return null;
       }
       return "Error de Autenticación";
@@ -120,7 +140,6 @@ class LoginScreen extends StatelessWidget {
   }
 
   Future<String> _recoverPassword(String name) {
-    print('Name: $name');
     return Future.delayed(loginTime).then((_) {
       if (!users.containsKey(name)) {
         return 'Username not exists';
@@ -169,7 +188,6 @@ class LoginScreen extends StatelessWidget {
         return _authUser(data, context);
       },
       onSignup: (LoginData data) {
-
         return _singUpUser(data, context);
       },
       onSubmitAnimationCompleted: () {
@@ -192,8 +210,9 @@ class LoginScreen extends StatelessWidget {
         .then((response) {
       _isLogged = true;
       if (response.statusCode == 201) {
-        var _authProvider = Provider.of<AuthProvider>(context, listen: false);
-        _authProvider.authToken = "Bearer ${response.body.split(":")[1]}";
+        // var _authProvider = Provider.of<AuthProvider>(context, listen: false);
+        // _authProvider.authToken = "Bearer ${response.body.split(":")[1]}";
+        actualizaLoginProviderFromServerData(context, data.name, response.body);
         return null;
       } else if (response.statusCode == 406) {
         return "Error el usuario ya existe.";

@@ -1,6 +1,8 @@
 import 'package:ds_richmeat_form/model/FormRM.dart';
+import 'package:ds_richmeat_form/providers/drawerProvider.dart';
 import 'package:ds_richmeat_form/screens/ColdRoomsScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FormMenuScreen extends StatelessWidget {
   final String _title;
@@ -33,29 +35,8 @@ class FormMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: Column(
-          children: [
-            UserAccountsDrawerHeader(
-              currentAccountPicture: Image.asset("assets/img/app_icon.png"),
-              accountName: Text("ale"),
-              accountEmail: Text("al@richmeat.com"),
-            ),
-            Text("Formularios"),
-            ListTile(
-              title: Text("Revisados"),
-              onTap: () {
-                Navigator.popAndPushNamed(context, "/form");
-              },
-              leading: Image.asset("assets/img/temperature_form.png"),
-            ),
-            ListTile(
-              title: Text("Pendientes a Revisar"),
-              leading: Image.asset("assets/img/temperature_form.png"),
-            )
-          ],
-        ),
-      ),
+      drawer: Provider.of<DrawerProvider>(context, listen: false)
+          .dameDrawer(context),
       appBar: AppBar(
         title: Text(_title),
       ),

@@ -29,7 +29,6 @@ class _LoginDialogState extends State<LoginDialog> {
       ),
     )
         .then((response) {
-      print('status::${response.statusCode}');
       if (response.statusCode == 201) {
         if (response.body == 'login:true') {
           irAlMenu(context);
