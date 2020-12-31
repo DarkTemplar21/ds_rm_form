@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:ds_richmeat_form/model/ColdRoom.dart';
 import 'package:ds_richmeat_form/model/TempForm.dart';
 import 'package:ds_richmeat_form/providers/AuthProvider.dart';
-import 'package:ds_richmeat_form/widgets/ColdRoomWidget.dart';
+import 'package:ds_richmeat_form/widgets/ListCamarasWidget.dart';
+import 'package:ds_richmeat_form/widgets/PostFormFloatingActionButton.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -19,106 +18,55 @@ class _ColdRoomsScreenState extends State<ColdRoomsScreen> {
   TempForm res;
   bool estaCargando = false;
   bool huboError = false;
-
+  bool yaIntenteObtenerFormularioOnline = false;
+  String nombreFormulario = '';
   List<ColdRoom> initialColdRooms = [
     ColdRoom(
-        id: 0,
-        name: 'Andén 1 y 2  (Rango: 8 a 14 °C)',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '8 a 14'),
+      id: 0,
+      name: 'Andén 1 y 2  (Rango: 8 a 14 °C)',
+      temperatureRange: '8 a 14',
+    ),
     ColdRoom(
-        id: 1,
-        name: 'Conservación de MP (Rango: -5 a -20 °C)',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '-5 a -20'),
+      id: 1,
+      name: 'Conservación de MP (Rango: -5 a -20 °C)',
+      temperatureRange: '-5 a -20',
+    ),
     ColdRoom(
-        id: 2,
-        name: 'Conservación de PT (Rango: -10 a -23 °C)',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '-10 a -23'),
+      id: 2,
+      name: 'Conservación de PT (Rango: -10 a -23 °C)',
+      temperatureRange: '-10 a -23',
+    ),
     ColdRoom(
-        id: 3,
-        name: 'Anden 3 y 4 (Rango: 8 a 14 °C)',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '8 a 14'),
+      id: 3,
+      name: 'Anden 3 y 4 (Rango: 8 a 14 °C)',
+      temperatureRange: '8 a 14',
+    ),
     ColdRoom(
-        id: 4,
-        name: 'Pasillo (Rango: 8 a 14 °C)',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '8 a 14'),
+      id: 4,
+      name: 'Pasillo (Rango: 8 a 14 °C)',
+      temperatureRange: '8 a 14',
+    ),
     ColdRoom(
-        id: 5,
-        name: 'Empaque (Rango: 8 a 13 °C)',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '8 a 13'),
+      id: 5,
+      name: 'Empaque (Rango: 8 a 13 °C)',
+      temperatureRange: '8 a 13',
+    ),
     ColdRoom(
-        id: 6,
-        name: 'Preenfriamiento o PT (Rango: 0 a -5 °C)',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '0 a -5'),
+      id: 6,
+      name: 'Preenfriamiento o PT (Rango: 0 a -5 °C)',
+      temperatureRange: '0 a -5',
+    ),
     ColdRoom(
-        id: 7,
-        name: 'Proceso (Rango: 8 a 12 °C)',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '8 a 12'),
+      id: 7,
+      name: 'Proceso (Rango: 8 a 12 °C)',
+      temperatureRange: '8 a 12',
+    ),
     ColdRoom(
-        id: 8,
-        name: 'Temperado MP (Rango: 0 a 12 °C)',
-        isOn: true,
-        isInRange: true,
-        isReviewed: true,
-        temperatureRange: '0 a 12'),
+      id: 8,
+      name: 'Temperado MP (Rango: 0 a 12 °C)',
+      temperatureRange: '0 a 12',
+    ),
   ];
-
-  List<ColdRoom> dameColdRoomsDesdeJson(String jsonColdRooms) {
-    List<Map<String, dynamic>> datos =
-        jsonDecode(jsonColdRooms) as List<Map<String, dynamic>>;
-    return datos
-        .map((dicc) => ColdRoom(
-              // TODO convertir los datos q no son str
-              name: dicc['name'],
-              isReviewed: dicc['isReviewed'],
-              id: dicc['id'],
-              isOn: dicc['isOn'],
-              isInRange: dicc['isInRange'],
-              temperatureRange: dicc['temperatureRange'],
-            ))
-        .toList();
-  }
-
-  List<ColdRoom> dameColdRoomsDesdeList(
-      List<Map<String, dynamic>> jsonColdRooms) {
-    print('desde list: $jsonColdRooms');
-    // List<Map<String, dynamic>> datos =
-    //     jsonColdRooms as List<Map<String, dynamic>>;
-    return jsonColdRooms
-        .map((dicc) => ColdRoom(
-              // TODO convertir los datos q no son str
-              name: dicc['name'],
-              isReviewed: dicc['isReviewed'],
-              id: dicc['id'],
-              isOn: dicc['isOn'],
-              isInRange: dicc['isInRange'],
-              temperatureRange: dicc['temperatureRange'],
-            ))
-        .toList();
-  }
 
   void mostrarSnack(BuildContext context, String texto, MaterialColor color) {
     Scaffold.of(context).showSnackBar(SnackBar(
@@ -132,13 +80,11 @@ class _ColdRoomsScreenState extends State<ColdRoomsScreen> {
       estaCargando = true;
     });
     String urlForm =
-        // 'https://rm-form-backend.herokuapp.com/richmeat/form_by_id/$id';
         'https://rm-form-backend.herokuapp.com/richmeat/form_by_id';
     var _authProvider = Provider.of<AuthProvider>(
       context,
       listen: false,
     );
-    print('pidiendo form $id');
     http
         .post(
       urlForm,
@@ -147,23 +93,21 @@ class _ColdRoomsScreenState extends State<ColdRoomsScreen> {
     )
         .then((response) {
       if (response.statusCode == 200) {
-        print('response.body=${response.body}');
-        Map<String, dynamic> tempFormData = jsonDecode(response.body);
-        print('\n\n\n\n\n\n');
-        print('collll');
-        print(tempFormData['coldRooms']);
-        coldRooms = dameColdRoomsDesdeList(tempFormData['coldRooms']);
-        res = TempForm.dameTempFormDesdeColdRooms(coldRooms);
-        res.id = tempFormData["id"] as int;
-        res.created_date = tempFormData["createdDate"] as String;
-        res.reviewed_date = tempFormData["reviewedDate"] as String;
-        res.status = tempFormData["status"] as String;
-        res.created_by = tempFormData["createdBy"] as String;
-        res.reviewed_by = tempFormData["reviewedBy"] as String;
-        print('colruuums= $coldRooms');
+        try {
+          print('recibo\n\n\n');
+          print(response.body);
+          print('\n\n\n');
+          res = TempForm.fromJson(response.body);
+          coldRooms = res.coldRooms;
+        } catch (e) {
+          print('un error');
+          print(e);
+        }
         if (this.mounted) {
           setState(() {
             estaCargando = false;
+            huboError = false;
+            nombreFormulario = res.createdDate;
           });
         }
       } else {
@@ -191,138 +135,47 @@ class _ColdRoomsScreenState extends State<ColdRoomsScreen> {
     if (formId == null) {
       coldRooms = initialColdRooms;
     } else {
-      obtenerFormularioDadoId(formId);
+      if (!yaIntenteObtenerFormularioOnline) {
+        obtenerFormularioDadoId(formId);
+        yaIntenteObtenerFormularioOnline = true;
+      }
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Camaras de Enfriamiento"),
+        title: nombreFormulario == ''
+            ? Text("Camaras de Enfriamiento")
+            : ListTile(
+                title: Text(
+                  "Formulario",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+                subtitle: Text(
+                  nombreFormulario,
+                  style: TextStyle(fontSize: 15, color: Colors.white),
+                ),
+              ),
       ),
       body: SafeArea(
         child: estaCargando
             ? Center(child: CircularProgressIndicator())
             : ListCamarasWidget(fixedWidth: _fixedWidth, coldRooms: coldRooms),
       ),
-      floatingActionButton: PostFormFloatingActionButton(
-        coldRooms: coldRooms,
-        estaCargando: estaCargando,
-      ),
-    );
-  }
-}
-
-class ListCamarasWidget extends StatelessWidget {
-  const ListCamarasWidget({
-    Key key,
-    @required double fixedWidth,
-    @required this.coldRooms,
-  })  : _fixedWidth = fixedWidth,
-        super(key: key);
-
-  final double _fixedWidth;
-  final List<ColdRoom> coldRooms;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              SizedBox(
-                width: _fixedWidth,
-                child: Text(
-                  "Cámara",
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
+      floatingActionButton: formId == null
+          ? PostFormFloatingActionButton(
+              coldRooms: coldRooms,
+              estaCargando: estaCargando,
+            )
+          : FloatingActionButton(
+              onPressed: () {},
+              child: Icon(
+                Icons.print,
+                color: Colors.white,
               ),
-              Text(
-                "Encendida",
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              Text(
-                "En Rango",
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              Text(
-                "Revisada",
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-            ],
-          ),
-        ),
-        Container(
-          height: MediaQuery.of(context).size.height * 0.8,
-          child: ListView(
-            children: coldRooms.map((coldRoom) {
-              return ColdRoomWidget(coldRoom);
-            }).toList(),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class PostFormFloatingActionButton extends StatelessWidget {
-  const PostFormFloatingActionButton({
-    Key key,
-    @required this.coldRooms,
-    this.estaCargando,
-  }) : super(key: key);
-
-  final List<ColdRoom> coldRooms;
-  final bool estaCargando;
-
-  @override
-  Widget build(BuildContext context) {
-    var _authProvider = Provider.of<AuthProvider>(context);
-    return FloatingActionButton(
-      onPressed: estaCargando
-          ? null
-          : () {
-              TempForm tempForm =
-                  TempForm.dameTempFormDesdeColdRooms(coldRooms);
-              String formulario = jsonEncode(tempForm);
-              http.post(
-                'https://rm-form-backend.herokuapp.com/richmeat/form',
-                body: formulario,
-                headers: {'Authorization': _authProvider.authToken},
-              ).then((response) {
-                var formSubido = response.statusCode == 201;
-
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: formSubido ? Colors.green : Colors.red,
-                    content: Row(
-                      children: [
-                        Icon(formSubido ? Icons.cloud_done : Icons.cloud_off),
-                        SizedBox(
-                          width: 13,
-                        ),
-                        Text(
-                          formSubido
-                              ? 'Datos guardados correctamente.'
-                              : 'Error, el formulario no se ha guardado.',
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }).catchError((err) {
-                print('Hubo error $err');
-                Scaffold.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: Colors.red,
-                    content: Text('Error, los datos no se han guardado.\n'
-                        'Revise su coneccion a internet.'),
-                  ),
-                );
-              });
-            },
-      child: Icon(Icons.done),
+            ),
     );
   }
 }

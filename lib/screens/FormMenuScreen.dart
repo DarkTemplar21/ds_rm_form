@@ -38,7 +38,7 @@ class FormMenuScreen extends StatelessWidget {
       drawer: Provider.of<DrawerProvider>(context, listen: false)
           .dameDrawer(context),
       appBar: AppBar(
-        title: Text(_title),
+        title: Text('Formularios RichMeat'),
       ),
       body: ListView(
           children: forms

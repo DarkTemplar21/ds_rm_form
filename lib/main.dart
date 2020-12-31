@@ -125,15 +125,9 @@ class LoginScreen extends StatelessWidget {
       _isLogged = true;
       if (response.statusCode == 201) {
         actualizaLoginProviderFromServerData(context, data.name, response.body);
-        // var _authProvider = Provider.of<AuthProvider>(context, listen: false);
-        // List<String> respuesta = response.body.split(",");
-        // String token = respuesta[0].split(":")[1];
-        // String rol = respuesta[1].substring(4);
-        // _authProvider.setAuth('Bearer $token', rol);
-        // _authProvider.authToken = "Bearer ${respuesta[0].split(":")[1]}";
         return null;
       }
-      return "Error de Autenticación";
+      return "Error de Autenticación"; // FIXME no hay q debolver un future?
     }).catchError((err) {
       return Future.value('Error de RED.');
     });

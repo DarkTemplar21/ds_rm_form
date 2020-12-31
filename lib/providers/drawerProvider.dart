@@ -40,15 +40,41 @@ class DrawerProvider with ChangeNotifier {
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: ListTile(
                     onTap: () {
+                      Navigator.popAndPushNamed(context, "/formMenu");
+                    },
+                    title: Text("Inicio"),
+                    leading: Image.asset("assets/img/temperature_form.png"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.popAndPushNamed(context, "/form");
+                    },
+                    title: Text("Creados"),
+                    leading: Image.asset("assets/img/temperature_form.png"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.popAndPushNamed(context, "/form");
+                    },
+                    title: Text("Por Revisar"),
+                    leading: Image.asset("assets/img/temperature_form.png"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: ListTile(
+                    onTap: () {
                       Navigator.popAndPushNamed(context, "/form");
                     },
                     title: Text("Revisados"),
                     leading: Image.asset("assets/img/temperature_form.png"),
                   ),
-                ),
-                ListTile(
-                  title: Text("Pendientes a Revisar"),
-                  leading: Image.asset("assets/img/temperature_form.png"),
                 ),
                 Divider(),
                 Padding(
@@ -58,6 +84,25 @@ class DrawerProvider with ChangeNotifier {
                     "Acerca De",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.popAndPushNamed(context, "/form");
+                    },
+                    title: Text(
+                      "DUSSEWI",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    subtitle: Text('Aplicaciones por encargo.'),
+                    leading: Image.asset(
+                      "assets/img/logo_dussewi.png",
+                      width: 56,
                     ),
                   ),
                 ),
