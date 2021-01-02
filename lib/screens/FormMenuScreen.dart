@@ -9,24 +9,19 @@ class FormMenuScreen extends StatelessWidget {
 
   List<FormRM> forms = [
     FormRM(
-        name: "Temperaturas",
-        detail: "Formulario de TEMP",
-        imageURI: "assets/img/temperature_form.png",
+        name: "Temperatura",
+        detail: "Formulario de Temperaturas",
+        imageURI: "assets/img/formularios/temperatura.png",
         screen: ColdRoomRoute()),
     FormRM(
-        name: "Pepe",
-        detail: "Formulario de TEMP",
-        imageURI: "assets/img/temperature_form.png",
+        name: "Humedad",
+        detail: "Formulario de Humedad",
+        imageURI: "assets/img/formularios/humedad.png",
         screen: ColdRoomRoute()),
     FormRM(
-        name: "Calabaza",
-        detail: "Formulario de TEMP",
-        imageURI: "assets/img/temperature_form.png",
-        screen: ColdRoomRoute()),
-    FormRM(
-        name: "Juan",
-        detail: "Formulario de TEMP",
-        imageURI: "assets/img/temperature_form.png",
+        name: "Presion",
+        detail: "Formulario de Presion",
+        imageURI: "assets/img/formularios/presion.png",
         screen: ColdRoomRoute()),
   ];
 

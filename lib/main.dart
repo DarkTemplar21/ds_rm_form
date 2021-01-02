@@ -41,7 +41,8 @@ class MyApp extends StatelessWidget {
           title: 'Login Demo',
           theme: ThemeData(
             // brightness: Brightness.dark,
-            primarySwatch: Colors.deepPurple,
+            // primarySwatch: Colors.deepPurple,
+            primarySwatch: Colors.indigo,
             accentColor: Colors.orange,
             cursorColor: Colors.orange,
             // fontFamily: 'SourceSansPro',
@@ -167,7 +168,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
-      title: 'DS FORMS',
+      title: '',
       messages: LoginMessages(
           usernameHint: "Usuario",
           passwordHint: "Contraseña",
@@ -177,7 +178,7 @@ class LoginScreen extends StatelessWidget {
       emailValidator: (usuario) {
         return usuario.isEmpty ? "Usuario incorrecto" : null;
       },
-      logo: 'assets/img/app_icon.png',
+      // logo: 'assets/img/rm_logo.png',
       onLogin: (LoginData data) {
         return _authUser(data, context);
       },

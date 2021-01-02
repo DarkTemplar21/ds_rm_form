@@ -26,7 +26,7 @@ class PostFormFloatingActionButton extends StatelessWidget {
           : () {
               TempForm tempFormActual = TempForm(
                 id: -1,
-                status: TEMP_FORM_STATUS.CREADO,
+                status: FORM_STATUS.CREADO,
                 reviewedDate: '',
                 createdDate: '',
                 reviewedBy: '',

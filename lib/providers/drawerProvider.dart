@@ -10,14 +10,14 @@ class DrawerProvider with ChangeNotifier {
       child: Column(
         children: [
           UserAccountsDrawerHeader(
-            currentAccountPicture: Image.asset("assets/img/app_icon.png"),
+            currentAccountPicture: Image.asset("assets/img/usuario.png"),
             accountName: Text(Provider.of<AuthProvider>(
               context,
               listen: false,
             ).nombre),
             accountEmail: Text("email@richmeat.com"),
             otherAccountsPictures: [
-              Image.asset("assets/img/temperature_form.png"),
+              Image.asset("assets/img/usuario.png"),
             ],
           ),
           Padding(
@@ -36,26 +36,17 @@ class DrawerProvider with ChangeNotifier {
                   ),
                 ),
                 // Divider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.popAndPushNamed(context, "/formMenu");
-                    },
-                    title: Text("Inicio"),
-                    leading: Image.asset("assets/img/temperature_form.png"),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.popAndPushNamed(context, "/form");
-                    },
-                    title: Text("Creados"),
-                    leading: Image.asset("assets/img/temperature_form.png"),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 8),
+                //   child: ListTile(
+                //     onTap: () {
+                //       // Navigator.popAndPushNamed(context, "/formMenu");
+                //       Navigator.pop(context);
+                //     },
+                //     title: Text("Inicio"),
+                //     leading: Image.asset("assets/img/docs/doc_richmeat.png"),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: ListTile(
@@ -63,7 +54,7 @@ class DrawerProvider with ChangeNotifier {
                       Navigator.popAndPushNamed(context, "/form");
                     },
                     title: Text("Por Revisar"),
-                    leading: Image.asset("assets/img/temperature_form.png"),
+                    leading: Image.asset("assets/img/docs/doc_creado.png"),
                   ),
                 ),
                 Padding(
@@ -73,13 +64,22 @@ class DrawerProvider with ChangeNotifier {
                       Navigator.popAndPushNamed(context, "/form");
                     },
                     title: Text("Revisados"),
-                    leading: Image.asset("assets/img/temperature_form.png"),
+                    leading: Image.asset("assets/img/docs/doc_revisado.png"),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.popAndPushNamed(context, "/form");
+                    },
+                    title: Text("Impresos"),
+                    leading: Image.asset("assets/img/docs/doc_impreso.png"),
                   ),
                 ),
                 Divider(),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  padding: const EdgeInsets.only(left: 5, top: 10),
                   child: Text(
                     "Acerca De",
                     style: TextStyle(
@@ -88,7 +88,8 @@ class DrawerProvider with ChangeNotifier {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
                   child: ListTile(
                     onTap: () {
                       Navigator.popAndPushNamed(context, "/form");
@@ -99,10 +100,15 @@ class DrawerProvider with ChangeNotifier {
                         fontSize: 18,
                       ),
                     ),
-                    subtitle: Text('Aplicaciones por encargo.'),
+                    subtitle: Text(
+                      'Aplicaciones por encargo.',
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
                     leading: Image.asset(
                       "assets/img/logo_dussewi.png",
-                      width: 56,
+                      width: 40,
                     ),
                   ),
                 ),

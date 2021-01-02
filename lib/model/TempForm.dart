@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'ColdRoom.dart';
 
-class TEMP_FORM_STATUS {
+class FORM_STATUS {
   static const String CREADO = 'creado';
   static const String REVISADO = 'revisado';
   static const String DESCONOCIDO = 'desconocido';

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:ds_richmeat_form/model/TempForm.dart';
 import 'package:ds_richmeat_form/providers/AuthProvider.dart';
-import 'package:ds_richmeat_form/providers/drawerProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -13,8 +12,8 @@ class FormScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: Provider.of<DrawerProvider>(context, listen: false)
-            .dameDrawer(context),
+        // drawer: Provider.of<DrawerProvider>(context, listen: false)
+        //     .dameDrawer(context),
         appBar: AppBar(
           title: Text("Formularios Creados"),
         ),
@@ -39,7 +38,7 @@ class FormScreen extends StatelessWidget {
                       style: TextStyle(fontSize: 17),
                     ),
                     leading: Image.asset(
-                      "assets/img/temperature_form.png",
+                      "assets/img/formularios/temperatura.png",
                       width: 46,
                     ),
                     subtitle: Text(
