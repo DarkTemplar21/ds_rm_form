@@ -1,8 +1,7 @@
 import 'package:ds_richmeat_form/model/FormRM.dart';
-import 'package:ds_richmeat_form/providers/drawerProvider.dart';
 import 'package:ds_richmeat_form/screens/ColdRoomsScreen.dart';
+import 'package:ds_richmeat_form/widgets/midrawer.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class FormMenuScreen extends StatelessWidget {
   final String _title;
@@ -30,8 +29,7 @@ class FormMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Provider.of<DrawerProvider>(context, listen: false)
-          .dameDrawer(context),
+      drawer: MiDrawer(),
       appBar: AppBar(
         title: Text('Formularios RichMeat'),
       ),

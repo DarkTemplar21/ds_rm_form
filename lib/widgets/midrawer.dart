@@ -1,11 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'package:ds_richmeat_form/providers/AuthProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'AuthProvider.dart';
-
-class DrawerProvider with ChangeNotifier {
-  Drawer dameDrawer(BuildContext context) {
+class MiDrawer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Drawer(
       child: Column(
         children: [
@@ -77,41 +76,41 @@ class DrawerProvider with ChangeNotifier {
                     leading: Image.asset("assets/img/docs/doc_impreso.png"),
                   ),
                 ),
-                Divider(),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5, top: 10),
-                  child: Text(
-                    "Acerca De",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.popAndPushNamed(context, "/form");
-                    },
-                    title: Text(
-                      "DUSSEWI",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'Aplicaciones por encargo.',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    leading: Image.asset(
-                      "assets/img/logo_dussewi.png",
-                      width: 40,
-                    ),
-                  ),
-                ),
+                // Divider(),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 5, top: 10),
+                //   child: Text(
+                //     "Acerca De",
+                //     style: TextStyle(
+                //       fontWeight: FontWeight.bold,
+                //     ),
+                //   ),
+                // ),
+                // Padding(
+                //   padding:
+                //       const EdgeInsets.symmetric(vertical: 0, horizontal: 2),
+                //   child: ListTile(
+                //     onTap: () {
+                //       Navigator.popAndPushNamed(context, "/form");
+                //     },
+                //     title: Text(
+                //       "DUSSEWI",
+                //       style: TextStyle(
+                //         fontSize: 18,
+                //       ),
+                //     ),
+                //     subtitle: Text(
+                //       'Aplicaciones por encargo.',
+                //       style: TextStyle(
+                //         color: Theme.of(context).primaryColor,
+                //       ),
+                //     ),
+                //     leading: Image.asset(
+                //       "assets/img/logo_dussewi.png",
+                //       width: 40,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           )

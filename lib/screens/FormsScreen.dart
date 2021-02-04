@@ -12,8 +12,6 @@ class FormScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // drawer: Provider.of<DrawerProvider>(context, listen: false)
-        //     .dameDrawer(context),
         appBar: AppBar(
           title: Text("Formularios Creados"),
         ),
